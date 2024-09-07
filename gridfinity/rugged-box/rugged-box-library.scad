@@ -1,1 +1,1 @@
-../../rugged-box/rugged-box-library.scad
+include <../../rugged-box/rugged-box-library.scad>;

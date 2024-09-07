@@ -43,6 +43,9 @@ Reinforced_Corners = true;
 // Add a front grip to the box top (for boxes with two latches)
 Top_Grip = true;
 
+// Amount to inset the top base strips
+Top_Base_Inset = -1;
+
 // Add end stops to the hinges on the box bottom
 Hinge_End_Stops = true;
 
@@ -255,7 +258,7 @@ module custom_bottom() {
 
 module gridfinity_top_base_strip(i) {
     module _strip() {
-        gridfinity_base(l=1, off=-0.2);
+        gridfinity_base(l=1, off=Top_Base_Inset);
     }
 
     trim = (i >= (Length - 1) / 2 ? 3 : 1);
