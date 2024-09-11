@@ -13,6 +13,8 @@ use <gridfinity-rebuilt-openscad/gridfinity-rebuilt-utility.scad>;
 /* [Rendering] */
 // Part selection. Note: Assembled box previews show latches without chamfers for performance reasons.
 Part = "assembled_open"; // ["bottom": Bottom, "top": Top, "latch": Latch, "stacking_latch": Stacking latch, "handle": Handle, "label": Label, "side-by-side": Top and Bottom side-by-side, "assembled_open": Assembled open, "assembled_closed": Assembled closed, "bottom_modifier": Bottom print modifier volume for attachment ribs, "top_modifier": Top print modifier volume for attachment ribs, "top_grid_modifier": Top print modifier volume for Gridfinity lid]
+Vape_Station = true;
+Cannabis_Logo = false;
 
 /* [Dimensions] */
 // Interior side-to-side size in 42mm Gridfinity units
@@ -249,9 +251,24 @@ module custom_bottom() {
             gridfinity_baseplate_cut();
         }
     } else {
-        rbox_body();
-        rbox_for_interior() {
-            gridfinity_baseplate();
+        difference() {
+        union() {
+            rbox_body();
+            rbox_for_interior() {
+                gridfinity_baseplate();
+            }
+        }
+        if (Vape_Station) {
+            Output_Cutout_Limit = 23.5;
+            Output_Cutout_Diam = 25.5;
+            Output_Cutout_Thickness = (Wall_Thickness + Lip_Thickness) * 2;
+            translate([0, -51, (Bottom_Height * 7) / 2]) rotate([90, 0, 0]) {
+            intersection() {
+            cylinder(d = Output_Cutout_Diam, h = Output_Cutout_Thickness, center = true);
+            translate([Output_Cutout_Diam - Output_Cutout_Limit, 0, 0]) cube([Output_Cutout_Limit, Output_Cutout_Diam, Output_Cutout_Thickness], center = true);
+            }
+            }
+        }
         }
     }
 }
@@ -307,6 +324,9 @@ module custom_top() {
         union() {
             rbox_body();
             custom_top_interior_grid();
+        }
+        if (Cannabis_Logo) {
+            linear_extrude(0.2) scale([0.25, 0.25, 1]) import("cannabis.svg", center = true);
         }
         if (Gridfinity_Stackable) {
             extra_depth = gridfinity_base_extra_height(hole=true);
